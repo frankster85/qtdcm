@@ -185,7 +185,7 @@ void QtDcmManager::setSerieInfoWidget ( QtDcmSerieInfoWidget* widget )
     d->serieInfoWidget = widget;
 }
 
-QtDcmManager::outputdirmode QtDcmManager::getOutputdirMode()
+QtDcmManager::outputdirmode QtDcmManager::getOutputdirMode() const
 {
     return d->outputdirMode;
 }
@@ -206,7 +206,9 @@ void QtDcmManager::clearSerieInfo()
 }
 
 
-void QtDcmManager::updateSerieInfo ( QString eltCount, QString institution, QString name )
+void QtDcmManager::updateSerieInfo ( const QString &eltCount, 
+                                     const QString &institution, 
+                                     const QString &name )
 {
     if ( d->serieInfoWidget )
     {
@@ -223,7 +225,7 @@ void QtDcmManager::clearPreview()
 }
 
 
-void QtDcmManager::displayErrorMessage ( QString message )
+void QtDcmManager::displayErrorMessage ( const QString &message )
 {
     //Instanciate a message from the parent i.e qtdcm
     QMessageBox * msgBox = new QMessageBox ( d->mainWidget );
@@ -233,7 +235,7 @@ void QtDcmManager::displayErrorMessage ( QString message )
     delete msgBox;
 }
 
-void QtDcmManager::displayMessage ( QString info )
+void QtDcmManager::displayMessage ( const QString &info )
 {
     //Instanciate a message from the parent i.e qtdcm
     QMessageBox * msgBox = new QMessageBox ( d->mainWidget );
@@ -256,7 +258,7 @@ void QtDcmManager::findPatientsScu()
     }
 }
 
-void QtDcmManager::findStudiesScu ( QString patientName )
+void QtDcmManager::findStudiesScu ( const QString &patientName )
 {
     d->seriesToImport.clear();
 
@@ -265,7 +267,7 @@ void QtDcmManager::findStudiesScu ( QString patientName )
     delete finder;
 }
 
-void QtDcmManager::findSeriesScu ( QString patientName, QString studyUid )
+void QtDcmManager::findSeriesScu ( const QString &patientName, const QString &studyUid )
 {
     d->seriesToImport.clear();
 
@@ -274,14 +276,14 @@ void QtDcmManager::findSeriesScu ( QString patientName, QString studyUid )
     delete finder;
 }
 
-void QtDcmManager::findImagesScu ( QString serieInstanceUID )
+void QtDcmManager::findImagesScu ( const QString &serieInstanceUID )
 {
     QtDcmFindScu * finder = new QtDcmFindScu ( this );
     finder->findImagesScu ( serieInstanceUID );
     delete finder;
 }
 
-void QtDcmManager::foundPatient ( QMap<QString, QString> infosMap )
+void QtDcmManager::foundPatient ( const QMap<QString, QString> &infosMap )
 {
     if ( d->patientsTreeWidget )
     {
@@ -293,7 +295,7 @@ void QtDcmManager::foundPatient ( QMap<QString, QString> infosMap )
     }
 }
 
-void QtDcmManager::foundStudy ( QMap<QString, QString> infosMap )
+void QtDcmManager::foundStudy ( const QMap<QString, QString> &infosMap )
 {
     if ( d->studiesTreeWidget )
     {
@@ -306,7 +308,7 @@ void QtDcmManager::foundStudy ( QMap<QString, QString> infosMap )
     }
 }
 
-void QtDcmManager::foundSerie ( QMap<QString, QString> infosMap )
+void QtDcmManager::foundSerie ( const QMap<QString, QString> &infosMap )
 {
     if ( d->seriesTreeWidget )
     {
@@ -322,7 +324,7 @@ void QtDcmManager::foundSerie ( QMap<QString, QString> infosMap )
     }
 }
 
-void QtDcmManager::foundImage ( QString image, int number )
+void QtDcmManager::foundImage ( const QString &image, int number )
 {
     d->listImages.append ( image );
     if ( number )
@@ -353,7 +355,7 @@ void QtDcmManager::findPatientsDicomdir()
     delete finder;
 }
 
-void QtDcmManager::findStudiesDicomdir ( QString patientName )
+void QtDcmManager::findStudiesDicomdir ( const QString &patientName )
 {
     d->seriesToImport.clear();
     QtDcmFindDicomdir * finder = new QtDcmFindDicomdir ( this );
@@ -362,7 +364,8 @@ void QtDcmManager::findStudiesDicomdir ( QString patientName )
     delete finder;
 }
 
-void QtDcmManager::findSeriesDicomdir ( QString patientName, QString studyUID )
+void QtDcmManager::findSeriesDicomdir ( const QString &patientName, 
+                                        const QString &studyUID )
 {
     d->seriesToImport.clear();
     QtDcmFindDicomdir * finder = new QtDcmFindDicomdir ( this );
@@ -371,7 +374,7 @@ void QtDcmManager::findSeriesDicomdir ( QString patientName, QString studyUID )
     delete finder;
 }
 
-void QtDcmManager::findImagesDicomdir ( QString uid )
+void QtDcmManager::findImagesDicomdir ( const QString &uid )
 {
     QtDcmFindDicomdir * finder = new QtDcmFindDicomdir ( this );
     finder->setDcmItem ( d->dfile.getDataset() );
@@ -411,7 +414,7 @@ void QtDcmManager::moveSelectedSeries()
     }
 }
 
-void QtDcmManager::getPreviewFromSelectedSerie ( QString uid, int elementIndex )
+void QtDcmManager::getPreviewFromSelectedSerie ( const QString &uid, int elementIndex )
 {
     if ( !d->tempDir.exists() )
         return;
@@ -516,7 +519,7 @@ void QtDcmManager::importSelectedSeries()
     }
 }
 
-void QtDcmManager::importToDirectory ( QString directory )
+void QtDcmManager::importToDirectory ( const QString &directory )
 {
     if ( this->seriesToImportSize() != 0 )
     {
@@ -525,7 +528,7 @@ void QtDcmManager::importToDirectory ( QString directory )
     }
 }
 
-void QtDcmManager::onSerieMoved ( QString directory , QString serie , int number )
+void QtDcmManager::onSerieMoved ( const QString &directory , const QString &serie , int number )
 {
     emit serieMoved ( directory );
     if ( d->useConverter )
@@ -640,7 +643,7 @@ void QtDcmManager::deleteCurrentSerieDir()
         qDebug() << tr ( "Probleme lors de la suppression du répertoire temporaire" );
 }
 
-void QtDcmManager::makePreview ( QString filename )
+void QtDcmManager::makePreview ( const QString &filename )
 {
     DcmRLEDecoderRegistration::registerCodecs ( OFFalse, OFFalse );
     DJDecoderRegistration::registerCodecs ( EDC_photometricInterpretation, EUC_default, EPC_default, OFFalse );
@@ -718,7 +721,7 @@ QString QtDcmManager::getDicomdir() const
     return d->dicomdir;
 }
 
-void QtDcmManager::setDicomdir ( QString dicomdir )
+void QtDcmManager::setDicomdir ( const QString &dicomdir )
 {
     d->dicomdir = dicomdir;
     //Load dicomdir in a DCMTK DicomFileFormat object
@@ -735,7 +738,7 @@ QString QtDcmManager::getOutputDirectory() const
     return d->outputDir;
 }
 
-void QtDcmManager::setOutputDirectory ( QString directory )
+void QtDcmManager::setOutputDirectory ( const QString &directory )
 {
     d->outputDir = directory;
 }
@@ -751,27 +754,27 @@ void QtDcmManager::setCurrentPacs ( int index )
         d->currentPacs = QtDcmPreferences::instance()->getServers().at ( index );
 }
 
-QString QtDcmManager::getPatientName()
+QString QtDcmManager::getPatientName() const
 {
     return d->patientName;
 }
 
-void QtDcmManager::setPatientName ( QString patientName )
+void QtDcmManager::setPatientName ( const QString &patientName )
 {
     d->patientName = patientName;
 }
 
-QString QtDcmManager::getPatientId()
+QString QtDcmManager::getPatientId() const
 {
     return d->patientId;
 }
 
-void QtDcmManager::setPatientId ( QString patientId )
+void QtDcmManager::setPatientId ( const QString &patientId )
 {
     d->patientId = patientId;
 }
 
-QString QtDcmManager::getPatientBirthDate()
+QString QtDcmManager::getPatientBirthDate() const 
 {
     QString birthdate;
     if ( d->patientsTreeWidget )
@@ -781,7 +784,7 @@ QString QtDcmManager::getPatientBirthDate()
     return birthdate;
 }
 
-QString QtDcmManager::getPatientSex()
+QString QtDcmManager::getPatientSex() const 
 {
     QString sex ( "" );
     if ( d->patientsTreeWidget )
@@ -791,8 +794,8 @@ QString QtDcmManager::getPatientSex()
     return sex;
 }
 
-QString QtDcmManager::getExamDate()
-{
+QString QtDcmManager::getExamDate() const 
+{ 
     QString examDate;
     if ( d->studiesTreeWidget )
         if ( d->studiesTreeWidget->currentItem() )
@@ -801,57 +804,57 @@ QString QtDcmManager::getExamDate()
     return examDate;
 }
 
-void QtDcmManager::setPatientSex ( QString sex )
+void QtDcmManager::setPatientSex ( const QString &sex )
 {
     d->patientSex = sex;
 }
 
-QString QtDcmManager::getSerieDescription()
+QString QtDcmManager::getSerieDescription() const 
 {
     return d->serieDescription;
 }
 
-void QtDcmManager::setSerieDescription ( QString serieDescription )
+void QtDcmManager::setSerieDescription ( const QString &serieDescription )
 {
     d->serieDescription = serieDescription;
 }
 
-QString QtDcmManager::getStudyDescription()
+QString QtDcmManager::getStudyDescription() const 
 {
     return d->studyDescription;
 }
 
-void QtDcmManager::setStudyDescription ( QString studyDescription )
+void QtDcmManager::setStudyDescription ( const QString &studyDescription )
 {
     d->studyDescription = studyDescription;
 }
 
-void QtDcmManager::setModality ( QString modality )
+void QtDcmManager::setModality ( const QString &modality )
 {
     d->modality = modality;
 }
 
-QString QtDcmManager::getModality()
+QString QtDcmManager::getModality() const 
 {
     return d->modality;
 }
 
-void QtDcmManager::setDate1 ( QString date )
+void QtDcmManager::setDate1 ( const QString &date )
 {
     d->date1 = date;
 }
 
-QString QtDcmManager::getDate1()
+QString QtDcmManager::getDate1() const 
 {
     return d->date1;
 }
 
-void QtDcmManager::setDate2 ( QString date )
+void QtDcmManager::setDate2 ( const QString &date )
 {
     d->date2 = date;
 }
 
-QString QtDcmManager::getDate2()
+QString QtDcmManager::getDate2() const 
 {
     return d->date2;
 }
@@ -861,17 +864,17 @@ void QtDcmManager::addPatient()
     d->patients.append ( new QtDcmPatient() );
 }
 
-QString QtDcmManager::getMode()
+QString QtDcmManager::getMode() const 
 {
     return d->mode;
 }
 
-void QtDcmManager::setImagesList ( QList<QString> images )
+void QtDcmManager::setImagesList ( const QList<QString> &images )
 {
     d->images = images;
 }
 
-QList<QString> QtDcmManager::getListImages()
+QList<QString> QtDcmManager::getListImages() const
 {
     return d->listImages;
 }
@@ -882,23 +885,23 @@ void QtDcmManager::clearListImages()
     d->mapImages.clear();
 }
 
-void QtDcmManager::setSerieId ( QString id )
+void QtDcmManager::setSerieId ( const QString &id )
 {
     d->serieId = id;
 }
 
-QString QtDcmManager::getCurrentSerieDirectory()
+QString QtDcmManager::getCurrentSerieDirectory() const 
 {
     return d->currentSerieDir.absolutePath();
 }
 
-void QtDcmManager::addSerieToImport ( QString uid )
+void QtDcmManager::addSerieToImport ( const QString &uid )
 {
     if ( !d->seriesToImport.contains ( uid ) )
         d->seriesToImport.append ( uid );
 }
 
-void QtDcmManager::removeSerieToImport ( QString uid )
+void QtDcmManager::removeSerieToImport ( const QString &uid )
 {
     if ( d->seriesToImport.contains ( uid ) )
         d->seriesToImport.removeOne ( uid );
